@@ -2,8 +2,8 @@
 @setlocal
 
 @REM EDIT THIS SECTION ACCORDING TO YOUR ENV
-call "%VS140COMNTOOLS%..\..\VC\vcvarsall.bat" amd64
-set path=%path%;C:\Program Files\cmake-3.8.1-win64-x64\bin
+call "%VS140COMNTOOLS%..\..\VC\vcvarsall.bat" amd64_x86
+set path=%path%;C:\Program Files\CMake\bin
 set path=%path%;C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE
 set path=%path%;C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin
 @REM EOF
@@ -38,53 +38,53 @@ pushd "%~dp0"
 cd grpc\third_party\protobuf\cmake
 mkdir build & cd build
 mkdir solution & cd solution
-cmake -G "Visual Studio 14 2015 Win64" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_WITH_ZLIB=ON ../..
-"%devenv%" protobuf.sln /build "Debug|x64" /project ALL_BUILD
+cmake -G "Visual Studio 14 2015" -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_WITH_ZLIB=ON ../..
+"%devenv%" protobuf.sln /build "Debug|Win32" /project ALL_BUILD
 if not %ERRORLEVEL% == 0 goto Finish
 robocopy /mir .\Debug ..\..\..\..\..\bin\protobuf\debug
 
-"%devenv%" protobuf.sln /build "Release|x64" /project ALL_BUILD
+"%devenv%" protobuf.sln /build "Release|Win32" /project ALL_BUILD
 if not %ERRORLEVEL% == 0 goto Finish
 robocopy /mir .\Release ..\..\..\..\..\bin\protobuf\release
 
 cd ..\..\..\..\..\vsprojects
-"%devenv%" grpc_protoc_plugins.sln /build "Release|x64"
+"%devenv%" grpc_protoc_plugins.sln /build "Release|Win32"
 if not %ERRORLEVEL% == 0 goto Finish
-robocopy .\x64\Release\ ..\bin\grpc_protoc_plugins\ /XF *.lib *.iobj *.ipdb
-"%devenv%" grpc_protoc_plugins.sln /clean "Release|x64"
+robocopy .\Release\ ..\bin\grpc_protoc_plugins\ /XF *.lib *.iobj *.ipdb
+"%devenv%" grpc_protoc_plugins.sln /clean "Release|Win32"
 
 "%devenv%" grpc.sln /clean "Debug"
 "%devenv%" grpc.sln /clean "Release"
-"%devenv%" grpc.sln /build "Debug|x64" /project grpc++
-"%devenv%" grpc.sln /build "Debug|x64" /project grpc++_unsecure
+"%devenv%" grpc.sln /build "Debug|Win32" /project grpc++
+"%devenv%" grpc.sln /build "Debug|Win32" /project grpc++_unsecure
 if not %ERRORLEVEL% == 0 goto Finish
-robocopy /mir .\x64\Debug ..\bin\grpc\debug
+robocopy /mir .\Debug ..\bin\grpc\debug
 
-"%devenv%" grpc.sln /build "Release|x64" /project grpc++
-"%devenv%" grpc.sln /build "Release|x64" /project grpc++_unsecure
+"%devenv%" grpc.sln /build "Release|Win32" /project grpc++
+"%devenv%" grpc.sln /build "Release|Win32" /project grpc++_unsecure
 if not %ERRORLEVEL% == 0 goto Finish
-robocopy /mir .\x64\Release ..\bin\grpc\release /XF *grpc_cpp_plugin*
+robocopy /mir .\Release ..\bin\grpc\release /XF *grpc_cpp_plugin*
 
 "%devenv%" grpc.sln /clean "Debug"
 "%devenv%" grpc.sln /clean "Release"
-"%devenv%" grpc.sln /build "Debug-DLL|x64" /project grpc++
-"%devenv%" grpc.sln /build "Debug-DLL|x64" /project grpc++_unsecure
+"%devenv%" grpc.sln /build "Debug-DLL|Win32" /project grpc++
+"%devenv%" grpc.sln /build "Debug-DLL|Win32" /project grpc++_unsecure
 if not %ERRORLEVEL% == 0 goto Finish
-robocopy /mir .\x64\Debug-DLL ..\bin\grpc\debug_dll
+robocopy /mir .\Debug-DLL ..\bin\grpc\debug_dll
 
-"%devenv%" grpc.sln /build "Release-DLL|x64" /project grpc++
-"%devenv%" grpc.sln /build "Release-DLL|x64" /project grpc++_unsecure
+"%devenv%" grpc.sln /build "Release-DLL|Win32" /project grpc++
+"%devenv%" grpc.sln /build "Release-DLL|Win32" /project grpc++_unsecure
 if not %ERRORLEVEL% == 0 goto Finish
-robocopy /mir .\x64\Release-DLL ..\bin\grpc\release_dll /XF *grpc_cpp_plugin*
+robocopy /mir .\Release-DLL ..\bin\grpc\release_dll /XF *grpc_cpp_plugin*
 
 echo #### grpc build done!
 
 :Finish
-rem "%devenv%" protobuf.sln /clean "Debug|x64"
-rem "%devenv%" protobuf.sln /clean "Release|x64"
-rem "%devenv%" grpc_protoc_plugins.sln /clean "Release|x64" /project grpc_cpp_plugin
-rem "%devenv%" grpc.sln /clean "Debug|x64" /project grpc++
-rem "%devenv%" grpc.sln /clean "Release|x64" /project grpc++
+rem "%devenv%" protobuf.sln /clean "Debug|Win32"
+rem "%devenv%" protobuf.sln /clean "Release|Win32"
+rem "%devenv%" grpc_protoc_plugins.sln /clean "Release|Win32" /project grpc_cpp_plugin
+rem "%devenv%" grpc.sln /clean "Debug|Win32" /project grpc++
+rem "%devenv%" grpc.sln /clean "Release|Win32" /project grpc++
 popd
 endlocal
 pause
